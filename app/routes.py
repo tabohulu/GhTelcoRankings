@@ -27,7 +27,7 @@ def print_something():
 #    job=queue.enqueue('app.tasks.get_tweets')
     
 
-scheduler.start()
+# scheduler.start()
 
 @app.route('/')
 @app.route('/index')
