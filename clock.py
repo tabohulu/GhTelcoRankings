@@ -1,7 +1,7 @@
 # from redis import Redis
 # import rq
 from app import app
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.background import BackgroundScheduler,BlockingScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from app.models import CursorPosition
 import app.bots.retwitter_bot as rb
@@ -10,11 +10,12 @@ api=rb.create_api()
 queries=["mtnghana","#mtnghana","#vodafoneghana","vodafoneghana","airteltigo","#airteltigo"]
 
 scheduler = BackgroundScheduler()
+sched=BlockingScheduler()
 
 
 
 
-@scheduler.scheduled_job('interval',minutes="3")
+@sched.scheduled_job('interval',minutes="3")
 def print_something():
      print('This job is run every three minutes.')
     # for query in queries:
@@ -30,4 +31,4 @@ def print_something():
 #    job=queue.enqueue('app.tasks.get_tweets')
     
 
-scheduler.start()
+sched.start()
