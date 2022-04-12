@@ -13,7 +13,7 @@ sched=BlockingScheduler()
 
 
 
-@sched.scheduled_job('interval',minutes=3,timezone='Asia/Tokyo')
+@sched.scheduled_job('interval',hours=6,timezone='Asia/Tokyo')
 def print_something():
     
     # for query in queries:
