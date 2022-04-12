@@ -16,7 +16,7 @@ sched=BlockingScheduler()
 
 
 
-@sched.scheduled_job('interval',minutes="3")
+@sched.scheduled_job('interval',minutes=3)
 def print_something():
      print('This job is run every three minutes.')
     # for query in queries:
