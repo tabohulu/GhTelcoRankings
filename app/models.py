@@ -1,7 +1,7 @@
 from enum import unique
 from operator import pos
 
-from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import BIGINT
 from app import db
 from datetime import datetime
 
@@ -11,7 +11,7 @@ class Tweets(db.Model):
     hash_tag = db.Column(db.String(64),index=True)
     score=db.Column(db.Integer,default=0)
     date_created=db.Column(db.DateTime,index=True)
-    tweet_id=db.Column(db.BigInteger)
+    tweet_id=db.Column(BIGINT)
 
     def __repr__(self):
         return '<Tweet with hash_tag {} and score {}>'.format(self.hash_tag,self.score)
@@ -43,7 +43,7 @@ class Tweets(db.Model):
 
 class CursorPosition(db.Model):
     id=db.Column(db.Integer,primary_key=True)        
-    since_id=db.Column(db.BigInteger,default=1)
+    since_id=db.Column(BIGINT,default=1)
     key_word=db.Column(db.String(32))
 
     @staticmethod
