@@ -9,7 +9,7 @@ scheduler = BackgroundScheduler()
 
 
 
-@scheduler.scheduled_job(IntervalTrigger(minutes=1))
+@scheduler.scheduled_job(IntervalTrigger(minutes=1,timezone='Asia/Japan'))
 def print_something():
     get_tweets()
 #    queue= rq.Queue('rankings-tasks',connection=Redis.from_url(app.config['REDISTOGO_URL'])) 
