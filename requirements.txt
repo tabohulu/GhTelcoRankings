@@ -23,3 +23,5 @@ zipp==3.6.0
 psycopg2-binary
 gunicorn
 tweepy
+APScheduler==3.0.0
+rq

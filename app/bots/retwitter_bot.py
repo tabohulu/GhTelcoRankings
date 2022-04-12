@@ -1,12 +1,11 @@
 import tweepy
 import os
-from config import Config
 from app.models import Tweets
 def create_api():
-    consumer_key = Config.CONSUMER_KEY
-    consumer_secret = Config.CONSUMER_SECRET
-    access_token = Config.ACCESS_TOKEN
-    access_token_secret = Config.ACCESS_SECRET
+    consumer_key = os.getenv('CONSUMER_KEY')
+    consumer_secret = os.getenv('CONSUMER_SECRET')
+    access_token = os.getenv('ACCESS_TOKEN')
+    access_token_secret = os.getenv('ACCESS_SECRET')
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)

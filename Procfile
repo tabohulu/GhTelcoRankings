@@ -1,1 +1,2 @@
-web: flask db upgrade; gunicorn rankings:app
+web: flask db upgrade; gunicorn rankings:app 
+clock: clock.py
