@@ -1,7 +1,8 @@
 # from redis import Redis
 # import rq
 from app import app
-from apscheduler.schedulers.background import BackgroundScheduler,BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from app.models import CursorPosition
 import app.bots.retwitter_bot as rb
