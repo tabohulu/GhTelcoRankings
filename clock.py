@@ -11,7 +11,7 @@ queries=["mtnghana","#mtnghana","#vodafoneghana","vodafoneghana","airteltigo","#
 sched=BlockingScheduler()
 
 
-@sched.scheduled_job('interval',minutes=3,timezone='Asia/Tokyo')
+@sched.scheduled_job('interval',minutes=60,timezone='Asia/Tokyo')
 def print_something():
     get_tweets()
     
