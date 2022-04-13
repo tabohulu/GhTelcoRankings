@@ -21,7 +21,7 @@ def capture_tweets(since_id,api,query):
     new_since_id = since_id
     print(new_since_id)
     api.mentions_timeline()
-    for tweet in tweepy.Cursor(api.search_tweets,since_id=since_id,q=query,count=10,tweet_mode="extended").items():
+    for tweet in tweepy.Cursor(api.search_tweets,since_id=since_id,q=query,count=10,tweet_mode="extended").items(100):
         new_since_id = max(tweet.id, new_since_id)
         # print('user:{} tweets {}'.format(tweet.user.name,tweet.full_text))
         body=tweet.full_text
