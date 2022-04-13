@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <title>Document</title>
+    <style>
+      .card {
+        width: 100%;
+        margin: 2px;
+        flex-shrink: 0;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+
+      .container {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 5px;
+      }
+
+      .card-div {
+        font-size: larger;
+        background-color: #e5f0f1;
+        width: 100vh;
+        height: 40vh;
+        border: 1px solid blueviolet;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        overflow-x: scroll;
+
+        overscroll-behavior: contain;
+
+        /* hide scroll bar */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        /* momentum scroll on iOS */
+        -webkit-overflow-scrolling: touch;
+
+        /* disbable vertical scroll for touch */
+        /*touch-action: pan-x;*/
+
+        /* scroll snapping */
+        scroll-snap-type: x mandatory;
+      }
+
+      .card-div::-webkit-scrollbar {
+        display: none;
+      }
+
+      #submit {
+        background-color: #0095ff;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        box-shadow: rgba(255, 255, 255, 0.4) 0 1px 0 0 inset;
+        box-sizing: border-box;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans",
+          sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.15385;
+        margin: 0;
+        outline: none;
+        padding: 8px 0.8em;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: baseline;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tweets_index" class="container">1/{{tweets|length}}</div>
+    <div class="container">
+      <span
+        id="left"
+        class="nav material-icons"
+        style="font-size: 3em; color: rgb(180, 170, 170)"
+        >arrow_back_ios</span
+      >
+
+      <div class="card-div">
+        {%for tweet in tweets%}
+        <div class="card">
+          <p class="tweet_body">{{tweet.body}}</p>
+        </div>
+
+        {%endfor%}
+      </div>
+
+      <span
+        id="right"
+        class="nav material-icons"
+        style="font-size: 3em; color: rgb(180, 170, 170)"
+      >
+        arrow_forward_ios
+      </span>
+    </div>
+
+    <div class="container">
+      <label for="score">Score</label>
+      <select name="score" id="score">
+        <option value="1">1 (Positive Sentiment)</option>
+        <option value="0" selected>0 (Neutral Sentiment)</option>
+        <option value="-1">-1 (Negative Sentiment)</option>
+      </select>
+    </div>
+
+    <div class="container">
+      <div id="submit">Submit</div>
+    </div>
+
+    <script>
+      series_quotes_bb = [];
+      let questions_card_container =
+        document.getElementsByClassName("card-div")[0];
+      let questions_card_container_bb =
+        questions_card_container.getBoundingClientRect();
+      let sa = Array.from(document.getElementsByClassName("card"));
+      let questions_nav = Array.from(document.getElementsByClassName("nav"));
+      let question_index = 0;
+      let question_number_para = document.getElementById("tweets_index");
+      let no_of_quotes = Number(question_number_para.innerText.split("/")[1]);
+      questions_nav.forEach((card) => {
+        card.onclick = myscrollToDiv;
+      });
+
+      sa.forEach((s) => {
+        series_quotes_bb.push(s.getBoundingClientRect());
+      });
+
+      function myscrollToDiv(event) {
+        if (event.target.id === "left") {
+          question_index =
+            question_index - 1 >= 0 ? question_index - 1 : question_index;
+        } else {
+          question_index =
+            question_index + 1 < no_of_quotes
+              ? question_index + 1
+              : question_index;
+        }
+        questions_card_container.scrollTo(
+          series_quotes_bb[question_index].x - series_quotes_bb[0].x,
+          questions_card_container_bb.y
+        );
+        question_number_para.innerText = `${
+          question_index + 1
+        }/${no_of_quotes}`;
+      }
+    </script>
+  </body>
+</html>

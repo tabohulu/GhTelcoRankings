@@ -12,6 +12,7 @@ class Tweets(db.Model):
     score=db.Column(db.Integer,default=0)
     date_created=db.Column(db.DateTime,index=True)
     tweet_id=db.Column(BIGINT)
+    score_assigned=db.Column(db.Boolean,default=False)
 
     def __repr__(self):
         return '<Tweet with hash_tag {} and score {}>'.format(self.hash_tag,self.score)
@@ -19,9 +20,10 @@ class Tweets(db.Model):
     @staticmethod
     def create_tweet(body,hash_tag,date_created,tweet_id):
         try:
-            tweet = Tweets(body=body,hash_tag=hash_tag,date_created=date_created,tweet_id=tweet_id)    
-            db.session.add(tweet)
-            db.session.commit()
+            if Tweets.get_tweets_with_body(body) is None:
+                tweet = Tweets(body=body,hash_tag=hash_tag,date_created=date_created,tweet_id=tweet_id)    
+                db.session.add(tweet)
+                db.session.commit()
         except Exception as err:
             raise err  
 
@@ -32,6 +34,14 @@ class Tweets(db.Model):
     @staticmethod
     def get_tweets_with_body(body):
         return Tweets.query.filter_by(body=body).first()
+
+    @staticmethod
+    def get_scored_tweets():
+        return Tweets.query.filter_by(score_assigned=True).all()
+
+    @staticmethod
+    def get_unscored_tweets():
+        return Tweets.query.filter_by(score_assigned=False).all()    
 
     @staticmethod
     def get_tweets_with_tweet_id(tweet_id):

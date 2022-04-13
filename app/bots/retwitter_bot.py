@@ -27,9 +27,7 @@ def capture_tweets(since_id,api,query):
         body=tweet.full_text
         if len(body)>280:
             body=body[0:279]
-        db_value=Tweets.get_tweets_with_body(body)
-        if db_value is None:
-            Tweets.create_tweet(body=body,hash_tag=query,date_created=tweet.created_at,tweet_id=tweet.id)
+        Tweets.create_tweet(body=body,hash_tag=query,date_created=tweet.created_at,tweet_id=tweet.id)
     print("====================================")
     return new_since_id
     

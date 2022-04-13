@@ -11,7 +11,7 @@
 
     <h3>Verdict Loading</h3>
     <img src="../static/images/img1.jpg" alt="" />
-    {%for tweet in tweets%} {%if tweet.hash_tag=='mtnghana'%}
+    {%for tweet in tweets%} {%if tweet.hash_tag=='#mtnghana'%}
     <li>{{tweet.date_created}} : => {{tweet.body}}</li>
     {%endif%} {%endfor%}
   </body>
