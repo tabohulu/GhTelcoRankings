@@ -103,9 +103,38 @@
       >
 
       <div class="card-div">
-        {%for tweet in tweets%}
+        {%for i in range(tweets|length)%}
         <div class="card">
-          <p class="tweet_body">{{tweet.body}}</p>
+          <p class="tweet_body">{{tweets[i].body}}</p>
+          <div class="container">
+            <p>
+              <input
+                type="radio"
+                name="{{i}}-sentiment"
+                id="{{i}}-negative"
+                value="-1"
+              />
+              <label for="{{i}}-negative">negative</label>
+            </p>
+            <p>
+              <input
+                type="radio"
+                name="{{i}}-sentiment"
+                id="{{i}}-neutral"
+                value="0"
+              />
+              <label for="{{i}}-neutral">neutral</label>
+            </p>
+            <p>
+              <input
+                type="radio"
+                name="{{i}}-sentiment"
+                id="{{i}}-positive"
+                value="1"
+              />
+              <label for="{{i}}-positive">positive</label>
+            </p>
+          </div>
         </div>
 
         {%endfor%}
@@ -118,15 +147,6 @@
       >
         arrow_forward_ios
       </span>
-    </div>
-
-    <div class="container">
-      <label for="score">Score</label>
-      <select name="score" id="score">
-        <option value="1">1 (Positive Sentiment)</option>
-        <option value="0" selected>0 (Neutral Sentiment)</option>
-        <option value="-1">-1 (Negative Sentiment)</option>
-      </select>
     </div>
 
     <div class="container">
@@ -152,6 +172,11 @@
         series_quotes_bb.push(s.getBoundingClientRect());
       });
 
+      let radios = Array.from(document.querySelectorAll("input[type=radio]"));
+      radios.forEach((radio) => {
+        radio.onclick = getSelected;
+      });
+
       function myscrollToDiv(event) {
         if (event.target.id === "left") {
           question_index =
@@ -162,6 +187,41 @@
               ? question_index + 1
               : question_index;
         }
+        questions_card_container.scrollTo(
+          series_quotes_bb[question_index].x - series_quotes_bb[0].x,
+          questions_card_container_bb.y
+        );
+        question_number_para.innerText = `${
+          question_index + 1
+        }/${no_of_quotes}`;
+      }
+
+      function getSelected(event) {
+        console.log(event.target.id);
+        // let index = Number(event.target.id[0]);
+
+        // selected_answers[index] = {
+        //   answer: event.target.value,
+        //   isCorrect: event.target.value === series_quotes[index].author,
+        // };
+
+        //move to next question
+        question_index =
+          question_index + 1 < no_of_quotes
+            ? question_index + 1
+            : question_index;
+        scrollAction();
+        // is_question_answered[index] = 1;
+
+        //make button active if all questions answered
+        // if (!is_question_answered.includes(0)) {
+        //   results_button.disabled = false;
+        //   results_button.style.display = "flex";
+        //   results_button.style.backgroundColor = "#093009";
+        // }
+      }
+
+      function scrollAction() {
         questions_card_container.scrollTo(
           series_quotes_bb[question_index].x - series_quotes_bb[0].x,
           questions_card_container_bb.y

@@ -1,9 +1,44 @@
-from enum import unique
-from operator import pos
-
 from sqlalchemy.dialects.postgresql import BIGINT
-from app import db
-from datetime import datetime
+from app import db, login
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer,primary_key = True)
+    username = db.Column(db.String(64),index=True,unique=True)
+    email = db.Column(db.String(120),index=True,unique = True)
+    password_hash = db.Column(db.String(128))
+    user_type = db.Column(db.String(20))#admin/#eval
+    sentiments = db.relationship('Sentiment',backref='author',lazy ='dynamic')#User.sentiments returns all sentiments associated with the user
+
+
+    def set_password(self,password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self,password):
+        return check_password_hash(self.password_hash,password)    
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+
+    @login.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
+
+class Sentiment(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    sentiment_score=db.Column(db.Integer)
+    user_id =  db.Column(db.Integer,db.ForeignKey('user.id'))#Sentiment.author return the user who assigned the sentiment
+    tweet_id = db.Column(db.Integer,db.ForeignKey('tweets.id'))#Sentiment.subject return the tweet to which the sentiment is assigned
+
+
+    @staticmethod
+    def create_sentiment(sentiment_score,user,tweet):
+        sentiment =Sentiment(sentiment_score=sentiment_score,author=user,subject=tweet)
+        db.session.add(sentiment)
+        db.session.commit()
+
+
 
 class Tweets(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -13,6 +48,7 @@ class Tweets(db.Model):
     date_created=db.Column(db.DateTime,index=True)
     tweet_id=db.Column(BIGINT)
     score_assigned=db.Column(db.Boolean,default=False)
+    sentiments= db.relationship('Sentiment',backref='subject',lazy='dynamic')
 
     def __repr__(self):
         return '<Tweet with hash_tag {} and score {}>'.format(self.hash_tag,self.score)
@@ -79,5 +115,4 @@ class CursorPosition(db.Model):
         position = CursorPosition.get_cursor_position(key_word)
         position.since_id=since_id
         db.session.commit()
-
 
