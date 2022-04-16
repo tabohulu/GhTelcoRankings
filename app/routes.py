@@ -66,7 +66,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('create_admin')
+@app.route('/create_admin')
 def create_admin():
     username='bohuluAdmin'
     email='bohulukwame@gmail.com'
