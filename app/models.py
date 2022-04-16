@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import BIGINT
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -32,11 +33,23 @@ class Sentiment(db.Model):
     tweet_id = db.Column(db.Integer,db.ForeignKey('tweets.id'))#Sentiment.subject return the tweet to which the sentiment is assigned
 
 
+    def __repr__(self):
+        return 'sentiment score of {} for tweet with id {} by evaluator {}'.format(self.sentiment_score,self.tweet_id,self.author.username)
+
+      
     @staticmethod
     def create_sentiment(sentiment_score,user,tweet):
         sentiment =Sentiment(sentiment_score=sentiment_score,author=user,subject=tweet)
         db.session.add(sentiment)
         db.session.commit()
+
+    @staticmethod
+    def delete_all_sentiments():
+        sentiments=Sentiment.query.all()
+        for sentiment in sentiments:
+            print(sentiment)
+            db.session.delete(sentiment)
+        db.session.commit()        
 
 
 
@@ -77,7 +90,16 @@ class Tweets(db.Model):
 
     @staticmethod
     def get_unscored_tweets():
-        return Tweets.query.filter_by(score_assigned=False).all()    
+        return Tweets.query.filter_by(score_assigned=False).all() 
+
+    @staticmethod
+    def get_unscored_tweets_lim(user,limit):
+        limit1=int(limit/2)
+        
+        tweets2 = Tweets.query.filter(Tweets.sentiments!=None,Sentiment.author!=user).join(Tweets.sentiments).order_by(Tweets.date_created).limit(limit1).all()
+        tweets1 = Tweets.query.filter((Tweets.sentiments==None)).order_by(Tweets.date_created).limit(limit-len(tweets2)).all()
+        return tweets1+tweets2
+
 
     @staticmethod
     def get_tweets_with_tweet_id(tweet_id):

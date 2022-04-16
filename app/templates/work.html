@@ -102,43 +102,45 @@
         >arrow_back_ios</span
       >
 
-      <div class="card-div">
-        {%for i in range(tweets|length)%}
-        <div class="card">
-          <p class="tweet_body">{{tweets[i].body}}</p>
-          <div class="container">
-            <p>
-              <input
-                type="radio"
-                name="{{i}}-sentiment"
-                id="{{i}}-negative"
-                value="-1"
-              />
-              <label for="{{i}}-negative">negative</label>
-            </p>
-            <p>
-              <input
-                type="radio"
-                name="{{i}}-sentiment"
-                id="{{i}}-neutral"
-                value="0"
-              />
-              <label for="{{i}}-neutral">neutral</label>
-            </p>
-            <p>
-              <input
-                type="radio"
-                name="{{i}}-sentiment"
-                id="{{i}}-positive"
-                value="1"
-              />
-              <label for="{{i}}-positive">positive</label>
-            </p>
+      <form action="/work_submitted" method="post" id="form">
+        <div class="card-div">
+          {%for i in range(tweets|length)%}
+          <div class="card">
+            <p class="tweet_body">{{tweets[i].body}}</p>
+            <div class="container">
+              <p>
+                <input
+                  type="radio"
+                  name="{{tweets[i].id}}-sentiment"
+                  id="{{tweets[i].id}}-negative"
+                  value="-1"
+                />
+                <label for="{{tweets[i].id}}-negative">negative</label>
+              </p>
+              <p>
+                <input
+                  type="radio"
+                  name="{{tweets[i].id}}-sentiment"
+                  id="{{tweets[i].id}}-neutral"
+                  value="0"
+                />
+                <label for="{{tweets[i].id}}-neutral">neutral</label>
+              </p>
+              <p>
+                <input
+                  type="radio"
+                  name="{{tweets[i].id}}-sentiment"
+                  id="{{tweets[i].id}}-positive"
+                  value="1"
+                />
+                <label for="{{tweets[i].id}}-positive">positive</label>
+              </p>
+            </div>
           </div>
-        </div>
 
-        {%endfor%}
-      </div>
+          {%endfor%}
+        </div>
+      </form>
 
       <span
         id="right"
@@ -177,6 +179,16 @@
         radio.onclick = getSelected;
       });
 
+      let submit_button = document.getElementById("submit");
+      let form = document.getElementById("form");
+      submit_button.disabled = true;
+      submit_button.style.display = "none";
+      submit_button.onclick = () => {
+        console.log("here");
+        form.submit();
+      };
+      questions_answered = 0;
+
       function myscrollToDiv(event) {
         if (event.target.id === "left") {
           question_index =
@@ -197,7 +209,9 @@
       }
 
       function getSelected(event) {
-        console.log(event.target.id);
+        questions_answered += 1;
+        console.log(`questions answered: ${questions_answered}`);
+
         // let index = Number(event.target.id[0]);
 
         // selected_answers[index] = {
@@ -210,15 +224,15 @@
           question_index + 1 < no_of_quotes
             ? question_index + 1
             : question_index;
+
         scrollAction();
         // is_question_answered[index] = 1;
 
         //make button active if all questions answered
-        // if (!is_question_answered.includes(0)) {
-        //   results_button.disabled = false;
-        //   results_button.style.display = "flex";
-        //   results_button.style.backgroundColor = "#093009";
-        // }
+        if (questions_answered >= no_of_quotes) {
+          submit_button.disabled = false;
+          submit_button.style.display = "flex";
+        }
       }
 
       function scrollAction() {
