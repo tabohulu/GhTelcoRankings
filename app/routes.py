@@ -36,7 +36,6 @@ def work():
 def work_submitted():
     for key in request.form.keys():
         tweet=Tweets.query.filter(Tweets.id==int(key.split('-')[0])).first()
-        print(tweet.body.split('@'))
         Sentiment.create_sentiment(sentiment_score=int(request.form[key]),user=current_user,tweet=tweet)
         
     return redirect(url_for('work'))
