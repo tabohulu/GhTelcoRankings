@@ -1,5 +1,6 @@
 from crypt import methods
-from app import app
+import email
+from app import app,db
 from app.models import Sentiment, Tweets, User
 from app.forms import LoginForm
 from app.tasks import get_tweets
@@ -64,6 +65,19 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('create_admin')
+def create_admin():
+    username='bohuluAdmin'
+    email='bohulukwame@gmail.com'
+    password="married@Thirty3"
+    if User.query.filter(User.username==username,User.user_type=='admin').first() is None:
+        user=User(username=username,email=email,user_type='admin')
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return 'user created'
+    return 'user already exists'      
 # @sched.scheduled_job('interval',minutes=1,timezone='Asia/Tokyo')
 # def print_something():
 #     get_tweets()
