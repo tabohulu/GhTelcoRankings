@@ -1,10 +1,6 @@
-from crypt import methods
-import email
 from app import app,db
 from app.models import Sentiment, Tweets, User
 from app.forms import LoginForm
-from app.tasks import get_tweets
-from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 import app.bots.retwitter_bot as rb
 from flask import flash, redirect, render_template, url_for,request
@@ -13,36 +9,35 @@ from werkzeug.urls import url_parse
 
 api=rb.create_api()
 queries=["mtnghana","#mtnghana","#vodafoneghana","vodafoneghana","airteltigo","#airteltigo"]
-
-# sched=BlockingScheduler()
 sched=BackgroundScheduler()
 limit=20
 
 
-
-@app.route('/index')
-@login_required
-def index():    
-    
-    return render_template('index.html')
+@app.route('/')
+@app.route('/home')
+def index(): 
+    overview={} 
+    overview['positive']=Sentiment.get_total_sentiments_with_score(1)
+    overview['neutral']=Sentiment.get_total_sentiments_with_score(0)
+    overview['negative']=Sentiment.get_total_sentiments_with_score(-1)
+    return render_template('index.html',title="Home",overview=overview)
 
 @app.route('/work')
 @login_required    
 def work():
-    # Sentiment.delete_all_sentiments()
     tweets=Tweets.get_unscored_tweets_lim(current_user, limit=limit)
-    return render_template('work.html',tweets=tweets)
+    total_tweets= Tweets.get_tweets_count()
+    return render_template('work.html',tweets=tweets,title="Work", count = total_tweets)
 
 @app.route('/work_submitted',methods=['GET','POST'])
 def work_submitted():
     for key in request.form.keys():
-        tweet=Tweets.query.filter(Tweets.id==int(key.split('-')[0])).first()
-        Sentiment.create_sentiment(sentiment_score=int(request.form[key]),user=current_user,tweet=tweet)
-        
+        tweet=Tweets.get_tweets_by_id(int(key.split('-')[0]))
+        Sentiment.create_sentiment(sentiment_score=int(request.form[key]),user=current_user,tweet=tweet)        
     return redirect(url_for('work'))
 
 
-@app.route('/')
+
 @app.route('/login',methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:

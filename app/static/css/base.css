@@ -1,0 +1,110 @@
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+  list-style: none;
+  scroll-behavior: smooth;
+}
+
+.card {
+  width: 100%;
+  margin: 2px;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.card-div {
+  font-size: larger;
+  background-color: #e5f0f1;
+  width: 100vh;
+  height: 40vh;
+  border: 1px solid blueviolet;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+
+  overscroll-behavior: contain;
+
+  /* hide scroll bar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  /* momentum scroll on iOS */
+  -webkit-overflow-scrolling: touch;
+
+  /* disbable vertical scroll for touch */
+  /*touch-action: pan-x;*/
+
+  /* scroll snapping */
+  scroll-snap-type: x mandatory;
+}
+
+.nav {
+  width: 5%;
+  text-align: center;
+}
+
+.nav:hover {
+  cursor: pointer;
+}
+
+.nav:first-child {
+  margin-right: 10px;
+}
+.nav:last-child {
+  margin-left: 10px;
+}
+
+.card-div::-webkit-scrollbar {
+  display: none;
+}
+
+.tweet_body {
+  text-align: center;
+  color: #000;
+  width: 100%;
+}
+
+#submit {
+  background-color: #0095ff;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: rgba(255, 255, 255, 0.4) 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans",
+    sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px 0.8em;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+}

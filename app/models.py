@@ -49,7 +49,16 @@ class Sentiment(db.Model):
         for sentiment in sentiments:
             print(sentiment)
             db.session.delete(sentiment)
-        db.session.commit()        
+        db.session.commit()  
+
+    @staticmethod
+    def get_sentiments_by_score(score):
+        sentiments=Sentiment.query.filter(Sentiment.sentiment_score==score).all()
+        return sentiments 
+
+    @staticmethod
+    def get_total_sentiments_with_score(score):
+        return Sentiment.query.filter(Sentiment.sentiment_score==score).count()            
 
 
 
@@ -94,11 +103,10 @@ class Tweets(db.Model):
 
     @staticmethod
     def get_unscored_tweets_lim(user,limit):
-        limit1=int(limit/2)
-        
-        tweets2 = Tweets.query.filter(Tweets.sentiments!=None,Sentiment.author!=user).join(Tweets.sentiments).order_by(Tweets.date_created).limit(limit1).all()
-        tweets1 = Tweets.query.filter((Tweets.sentiments==None)).order_by(Tweets.date_created).limit(limit-len(tweets2)).all()
-        return tweets1+tweets2
+        # limit1=int(limit/2)        
+        # tweets2 = Tweets.query.filter(Tweets.sentiments!=None,Sentiment.author!=user).join(Tweets.sentiments).order_by(Tweets.date_created).limit(limit1).all()
+        tweets1 = Tweets.query.filter((Tweets.sentiments==None)).order_by(Tweets.date_created).limit(limit).all()
+        return tweets1#+tweets2
 
 
     @staticmethod
@@ -106,8 +114,17 @@ class Tweets(db.Model):
         return Tweets.query.filter_by(tweet_id=tweet_id).first()    
 
     @staticmethod
+    def get_tweets_by_id(id):
+        return Tweets.query.filter_by(id=id).first()
+
+    @staticmethod
     def get_latest_tweet_id(hash_tag):
         return Tweets.query.filter_by(hash_tag=hash_tag).order_by(Tweets.id.desc()).first()   
+
+    @staticmethod
+    def get_tweets_count():
+        rows = db.session.query(Tweets).filter((Tweets.sentiments==None)).count()
+        return rows
 
 class CursorPosition(db.Model):
     id=db.Column(db.Integer,primary_key=True)        
